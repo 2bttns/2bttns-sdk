@@ -18,7 +18,7 @@ To use the SDK, you should instantiate the `TwoBttns` class using your 2bttns Ap
 
 ```typescript
 /*  server/some/path/twobttns.ts  */
-import TwoBttns, { ApiResponses } from "@2bttns/sdk";
+import TwoBttns from "@2bttns/sdk";
 export const twobttns = new TwoBttns({
   appId: process.env.TWOBTTNS_APP_ID,
   secret: process.env.TWOBTTNS_APP_SECRET,
