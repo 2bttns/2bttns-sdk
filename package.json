@@ -1,16 +1,20 @@
 {
   "name": "@2bttns/sdk",
-  "version": "1.0.0",
-  "description": "",
+  "version": "0.0.1",
+  "description": "The official 2bttns Node.js SDK",
   "main": "dist/index.js",
   "types": "types/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/2bttns/2bttns-sdk"
+  },
   "scripts": {
     "build": "rm -rf dist && rm -rf types && tsc",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "generate-openapi-types": "npx openapi-typescript http://localhost:3001/api/openapi.json --output 2bttns-api.d.ts"
+    "generate-openapi-types": "npx openapi-typescript http://localhost:3001/api/openapi.json --output 2bttns-api.d.ts",
+    "publish": "npm run build && npm publish --access public"
   },
-  "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "@types/jsonwebtoken": "^9.0.1",
     "openapi-typescript": "^6.1.0",
