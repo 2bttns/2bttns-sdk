@@ -2,7 +2,7 @@
 ![npm](https://img.shields.io/npm/dw/@2bttns/sdk?style=for-the-badge)
 ![npm](https://img.shields.io/npm/l/@2bttns/sdk?style=for-the-badge)
 
-The official 2bttns Node.js SDK.
+The official 2bttns Node.js SDK. Visit https://www.2bttns.com/docs/intro for more information.
 
 # Getting Started
 
@@ -246,7 +246,7 @@ Get player count.
 **Response**
 ```json
 {
-  "count": int
+  "count": 0
 }
 ```
 
@@ -270,9 +270,7 @@ Get player by ID.
     "id": "string",
     "name": "string",
     "createdAt": "string",
-    "
-
-updatedAt": "string"
+    "updatedAt": "string"
   }
 }
 ```
