@@ -2,7 +2,7 @@
 ![npm](https://img.shields.io/npm/dw/@2bttns/sdk?style=for-the-badge)
 ![npm](https://img.shields.io/npm/l/@2bttns/sdk?style=for-the-badge)
 
-The official 2bttns Node.js SDK. 
+The official 2bttns Node.js SDK.
 
 # Getting Started
 
@@ -40,7 +40,6 @@ export const twobttns = new TwoBttns({
 
 After configuring the SDK, you can use your exported `twobttns` instance to interact with your 2bttns app.
 
-
 ### Create a Play URL
 
 You can create a play URL using the `.generatePlayUrl(...)` method. This method will return a secure URL that you redirect your users to in order to play a 2bttns game you specify.
@@ -55,7 +54,6 @@ const url = twobttns.generatePlayUrl({
 });
 ```
 
-
 ### Making 2bttns API Calls
 
 You can perform API calls against the 2bttns API using the `.callApi(...)` method. The authentication process is handled automatically via a JWT generated from your App ID and App Secret.
@@ -65,69 +63,125 @@ You can perform API calls against the 2bttns API using the `.callApi(...)` metho
 const { data } = await twobttns.callApi("/players", "get");
 ```
 
+<br/>
+
+Easily pass parameters (body, query, path) through the `callApi` method:
+
+```typescript
+/*  server/path/to/api/handler.ts  */
+const { data } = await twobttns.callApi("/example/create", "post", {
+  id: playedId,
+});
+```
+
 
 ## API Endpoints
 
-### Example Endpoints
-
+#### Games
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| GET | /example/hello | Say hello to the world |
-| POST | /example/create | Create an example object in the database |
-| GET | /example/getAll | Get all examples |
-| GET | /example/getSecretMessage | Get a secret message |
+| GET | [/games/getPlayerScores](#get--gamesgetplayerscores) | Get a player's score data for a specific game |
+| GET | [/game-objects/ranked](#get--game-objectsranked) | Get ranked Game Object results for a player |
 
+#### Tags
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | [/tags](#get--tags) | Get all tags |
+
+#### Players
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | [/players/create](#post--playerscreate) | Create a player with a given ID and an optional name |
+| GET | [/players](#get--players) | Get all players |
+| GET | [/players/count](#get--playerscount) | Get player count |
+| GET | [/players/{id}](#get--playersid) | Get player by ID |
+| PUT | [/players/{id}](#put--playersid) | Update player by ID |
+| DELETE | [/players/{id}](#delete--playersid) | Delete player by ID |
+
+---
 
 ### Game Endpoints
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | /games/getPlayerScores | Get a player's score data for a specific game |
-| GET | /game-objects/ranked | Get ranked Game Object results for a player |
+#### `GET` /games/getPlayerScores 
 
-#### Response Structures
+Get a player's score data for a specific game.
 
-**GET /games/getplayerScores**
+**Required Parameters**
+```typescript
+{
+  "gameId": "string",
+  "playerId": "string"
+}
+```
+
+**Response**
 ```json
 {
   "playerScores": [
     {
       "createdAt": "string",
       "updatedAt": "string",
-      "gameId": "string",
+      "score": 0,
       "playerId": "string",
-      "score": "number"
+      "gameObjectId": "string",
+      "gameObject": {
+        "id": "string",
+        "createdAt": "string",
+        "updatedAt": "string",
+        "name": "string",
+        "description": "string"
+      }
     }
   ]
 }
 ```
 
-**GET /game-objects/ranked**
+---
+
+#### `GET` /game-objects/ranked 
+
+Get ranked Game Object results for a player.
+
+**Required Parameters**
+```typescript
+{
+  "playerId": "string",
+  "inputTags": "string",
+  "outputTag": "string"
+}
+```
+
+**Response**
 ```json
 {
-  "rankedResults": [
+  "scores": [
     {
-      "objectId": "string",
-      "score": "number"
+      "gameObject": {
+        "id": "string",
+        "name": "string"
+      },
+      "score": 0
     }
   ]
 }
 ```
+
+---
 
 ### Tag Endpoints
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | /tags | Get all tags |
+#### `GET` /tags
 
-#### Response Structures
-**GET /tags**
+Get all tags.
 
+**Response**
 ```json
 {
   "tags": [
     {
       "id": "string",
+      "name": "string",
+      "description": "string",
       "createdAt": "string",
       "updatedAt": "string"
     }
@@ -135,32 +189,41 @@ const { data } = await twobttns.callApi("/players", "get");
 }
 ```
 
+---
+
 ### Player Endpoints
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | /players/create | Create a player with a given ID and an optional name |
-| GET | /players | Get all players |
-| GET | /players/count | Get player count |
-| GET | /players/{id} | Get player by ID |
-| PUT | /players/{id} | Update player by ID |
-| DELETE | /players/{id} | Delete player by ID |
+#### `POST` /players/create 
 
+Create a player with a given ID and an optional name.
 
-#### Response Structures
-
-**POST /players/create**
-
-```json
+**Required Parameters**
+```typescript
 {
   "id": "string",
-  "name": "string",
-  "createdAt": "string",
-  "updatedAt": "string"
+  "name": "string"
 }
 ```
 
-**GET /players**
+**Response**
+```json
+{
+  "createdPlayer": {
+    "id": "HXXwoC3uzCiAv8p4kDx32iLu0SMk-V9MRD2whCxQ0rI2qKnemgUftm8bEqozW4GIXsb_LtJx_Xm",
+    "name": "string",
+    "createdAt": "string",
+    "updatedAt": "string"
+  }
+}
+```
+
+---
+
+#### `GET` /players
+
+Get all players.
+
+**Response**
 ```json
 {
   "players": [
@@ -174,44 +237,91 @@ const { data } = await twobttns.callApi("/players", "get");
 }
 ```
 
-**GET /players/count**
+---
+
+#### `GET` /players/count
+
+Get player count.
+
+**Response**
 ```json
 {
-  "count": "number"
+  "count": int
 }
 ```
 
+---
 
-**GET /players/{id}**
+#### `GET` /players/{id}
+
+Get player by ID.
+
+**Required Parameters**
+```typescript
+{
+  "id": "string"
+}
+```
+
+**Response**
 ```json
+{
+  "player": {
+    "id": "string",
+    "name": "string",
+    "createdAt": "string",
+    "
+
+updatedAt": "string"
+  }
+}
+```
+
+---
+
+####  `PUT` /players/{id}
+
+Update player by ID.
+
+**Required Parameters**
+```typescript
 {
   "id": "string",
-  "name": "string",
-  "createdAt": "string",
-  "updatedAt": "string"
+  "name": "string"
 }
 ```
 
-**PUT /players/{id}**
+**Response**
 ```json
 {
-  "id": "string",
-  "name": "string",
-  "createdAt": "string",
-  "updatedAt": "string"
+  "updatedPlayer": {
+    "id": "string",
+    "name": "string",
+    "createdAt": "string",
+    "updatedAt": "string"
+  }
 }
 ```
 
-**DELETE /players/{id}**
+---
+
+#### `DELETE` /players/{id}
+
+Delete player by ID.
+
+**Response**
 ```json
 {
-  "id": "string",
-  "name": "string",
-  "createdAt": "string",
-  "updatedAt": "string"
+  "deletedPlayer": {
+    "id": "string",
+    "name": "string",
+    "createdAt": "string",
+    "updatedAt": "string"
+  }
 }
 ```
 
+---
 
 ## License
 
